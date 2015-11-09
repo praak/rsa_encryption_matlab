@@ -12,3 +12,9 @@ bin_plain_txt = dec2bin(num_plain_txt)
 
 x = input('Enter primenumber');
 out =  primecheck(x);
+
+
+%       Totient function - DONE
+% TODO:
+%       GCD function     - 
+%       Figuring out the other part of the algorithm.
