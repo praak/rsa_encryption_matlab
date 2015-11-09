@@ -104,13 +104,15 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 number = str2double(get(handles.input_prime,'String'));
-
-for i = 2:(sqrt(number))
-    if (mod(number,i) == 0)
-        result = 'Not a prime'
+i=2;
+while i<(floor(sqrt(number)))
+    numb = mod(number,i);
+    if (numb == 0)
+        result = 'Not a prime';
     else
-        result = 'Prime!'
+        result = 'Prime!';
     end
+    i=i+1;
 end
 
 set(handles.output_check,'String',result);
