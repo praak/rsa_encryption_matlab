@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 08-Nov-2015 21:38:15
+% Last Modified by GUIDE v2.5 09-Nov-2015 00:09:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,6 +79,7 @@ function input_prime_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+
 % Hints: get(hObject,'String') returns contents of input_prime as text
 %        str2double(get(hObject,'String')) returns contents of input_prime as a double
 handles.input_prime = get(hObject,'String');
@@ -104,15 +105,71 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 number = str2double(get(handles.input_prime,'String'));
-i=2;
-while i<(floor(sqrt(number)))
-    numb = mod(number,i);
+i1=2;
+while i1<(floor(sqrt(number)))
+    numb = mod(number,i1);
     if (numb == 0)
         result = 'Not a prime';
     else
         result = 'Prime!';
     end
-    i=i+1;
+    i1=i1+1;
 end
 
 set(handles.output_check,'String',result);
+
+
+
+function input_prime2_Callback(hObject, eventdata, handles)
+% hObject    handle to input_prime2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of input_prime2 as text
+%        str2double(get(hObject,'String')) returns contents of input_prime2 as a double
+handles.input_prime2 = get(hObject,'String');
+
+
+% --- Executes during object creation, after setting all properties.
+function input_prime2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to input_prime2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in check_button2.
+function check_button2_Callback(hObject, eventdata, handles)
+% hObject    handle to check_button2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+number1 = str2double(get(handles.input_prime,'String'));
+number2 = str2double(get(handles.input_prime2,'String'));
+i2=2;
+while i2<(floor(sqrt(number2)))
+    numb2 = mod(number2,i2);
+    if (numb2 == 0)
+        result2 = 'Not a prime';
+        primeout = 'Cant find result when prime2 is not prime!';
+        set(handles.output_primes,'String',primeout);
+    else
+        result2 = 'Prime!';
+        sigh = (number1-1)*(number2-1);
+        checker = get(handles.output_check,'String');
+        if (strcmp('Prime!',checker))
+            primeout = sprintf('The something function gives us %d',sigh);
+            set(handles.output_primes,'String',primeout); 
+        else
+            primeout = 'Cant find result when prime1 is not prime!';
+            set(handles.output_primes,'String',primeout);
+        end
+    end
+    i2=i2+1;
+end
+
+set(handles.output_check2,'String',result2);
