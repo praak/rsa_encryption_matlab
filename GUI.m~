@@ -105,14 +105,17 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 number = str2double(get(handles.input_prime,'String'));
-for i1 = 2:(floor(sqrt(number)))
+i1=2;
+results{1} = 'NA';
+while i1<(floor(sqrt(number)))
     numb = mod(number,i1);
         if (numb == 0)
-            result = 'Not a prime';
-            break;
+            results{i} = 'Not a prime';
         else
-            result = 'Prime!';
+            results{i} = 'Prime!';
         end
+    i1=i1+1;
+    if strcmp(results(1
 end
 
 set(handles.output_check,'String',result);
@@ -149,25 +152,26 @@ function check_button2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 number1 = str2double(get(handles.input_prime,'String'));
 number2 = str2double(get(handles.input_prime2,'String'));
-for i2 = 2:(floor(sqrt(number2)))
+i2=2;
+while i2<(floor(sqrt(number2)))
     numb2 = mod(number2,i2);
     if (numb2 == 0)
         result2 = 'Not a prime';
-        primeout = result2;
-        break;
+        primeout = 'Cant find result when prime2 is not prime!';
+        set(handles.output_primes,'String',primeout);
     else
         result2 = 'Prime!';
         sigh = (number1-1)*(number2-1);
         checker = get(handles.output_check,'String');
         if (strcmp('Prime!',checker))
-            primeout = sprintf('The totient function gives us %d',sigh);
+            primeout = sprintf('The something function gives us %d',sigh);
             set(handles.output_primes,'String',primeout); 
         else
             primeout = 'Cant find result when prime1 is not prime!';
             set(handles.output_primes,'String',primeout);
         end
     end
+    i2=i2+1;
 end
 
 set(handles.output_check2,'String',result2);
-set(handles.output_primes,'String',primeout);
