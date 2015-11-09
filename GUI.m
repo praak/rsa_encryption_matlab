@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 09-Nov-2015 00:09:53
+% Last Modified by GUIDE v2.5 09-Nov-2015 13:06:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,7 +60,7 @@ guidata(hObject, handles);
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-
+set(handles.encrypt,'visible','off')
 
 % --- Outputs from this function are returned to the command line.
 function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
@@ -171,3 +171,77 @@ end
 
 set(handles.output_check2,'String',result2);
 set(handles.output_primes,'String',primeout);
+
+
+
+function in_msg_Callback(hObject, eventdata, handles)
+% hObject    handle to in_msg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of in_msg as text
+%        str2double(get(hObject,'String')) returns contents of in_msg as a double
+%set(handles.in_msg,'String',''); %clearing the text box. 
+set(handles.out_msg,'String',''); %clearing the output text box.
+handles.in_msg = get(hObject,'String');
+
+message = get(hObject,'String');
+num_message = (double(message)-96);
+%translating to decimal
+summed = 0;
+maxx = length(num_message);
+for p = 1:length(num_message)
+   summed = summed + num_message(p)*(27^(maxx-1));
+   maxx = maxx - 1;
+end
+out = sprintf('Output is : %i',summed);
+set(handles.out_msg,'String',out);
+
+
+% --- Executes during object creation, after setting all properties.
+function in_msg_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to in_msg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in encrypt.
+function encrypt_Callback(hObject, eventdata, handles)
+% hObject    handle to encrypt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+function test_gcd_Callback(hObject, eventdata, handles)
+% hObject    handle to test_gcd (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of test_gcd as text
+%        str2double(get(hObject,'String')) returns contents of test_gcd as a double
+
+
+% TODO : 
+%   Need to do the GCD CALL HERE. Need to pull the totient function
+%   Need to pull value from user. and check GCD = 1   
+
+
+
+% --- Executes during object creation, after setting all properties.
+function test_gcd_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to test_gcd (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

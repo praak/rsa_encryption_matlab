@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 09-Nov-2015 00:09:53
+% Last Modified by GUIDE v2.5 09-Nov-2015 12:29:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -105,17 +105,14 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 number = str2double(get(handles.input_prime,'String'));
-i1=2;
-results{1} = 'NA';
-while i1<(floor(sqrt(number)))
+for i1 = 2:(floor(sqrt(number)))
     numb = mod(number,i1);
         if (numb == 0)
-            results{i} = 'Not a prime';
+            result = 'Not a prime';
+            break;
         else
-            results{i} = 'Prime!';
+            result = 'Prime!';
         end
-    i1=i1+1;
-    if strcmp(results(1
 end
 
 set(handles.output_check,'String',result);
@@ -152,26 +149,73 @@ function check_button2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 number1 = str2double(get(handles.input_prime,'String'));
 number2 = str2double(get(handles.input_prime2,'String'));
-i2=2;
-while i2<(floor(sqrt(number2)))
+for i2 = 2:(floor(sqrt(number2)))
     numb2 = mod(number2,i2);
     if (numb2 == 0)
         result2 = 'Not a prime';
-        primeout = 'Cant find result when prime2 is not prime!';
-        set(handles.output_primes,'String',primeout);
+        primeout = result2;
+        break;
     else
         result2 = 'Prime!';
         sigh = (number1-1)*(number2-1);
         checker = get(handles.output_check,'String');
         if (strcmp('Prime!',checker))
-            primeout = sprintf('The something function gives us %d',sigh);
+            primeout = sprintf('The totient function gives us %d',sigh);
             set(handles.output_primes,'String',primeout); 
         else
             primeout = 'Cant find result when prime1 is not prime!';
             set(handles.output_primes,'String',primeout);
         end
     end
-    i2=i2+1;
 end
 
 set(handles.output_check2,'String',result2);
+set(handles.output_primes,'String',primeout);
+
+
+
+function in_msg_Callback(hObject, eventdata, handles)
+% hObject    handle to in_msg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of in_msg as text
+%        str2double(get(hObject,'String')) returns contents of in_msg as a double
+%set(handles.in_msg,'String',''); %clearing the text box. 
+set(handles.out_msg,'String',''); %clearing the output text box.
+handles.in_msg = get(hObject,'String');
+
+
+% --- Executes during object creation, after setting all properties.
+function in_msg_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to in_msg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in encrypt.
+function encrypt_Callback(hObject, eventdata, handles)
+% hObject    handle to encrypt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+message = get(handles.in_msg,'String')
+% num_message = (double(messagearr))
+% 
+% %translating to decimal
+% summed = 0;
+% for p = 1:length(num_message)
+%    summed = summed + num_message(p)*(27^(p))  
+% end
+% out = sprintf('Output is : %i',summed)
+% set(handles.out_msg,'String',out);
+
+
+
+
