@@ -108,11 +108,11 @@ number = str2double(get(handles.input_prime,'String'));
 i1=2;
 while i1<(floor(sqrt(number)))
     numb = mod(number,i1);
-    if (numb == 0)
-        result = 'Not a prime';
-    else
-        result = 'Prime!';
-    end
+        if (numb == 0)
+            result = 'Not a prime';
+        else
+            result = 'Prime!';
+        end
     i1=i1+1;
 end
 
