@@ -328,31 +328,13 @@ function decrypt_it_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 in_prime = (str2num(get(handles.test_gcd,'String')));
-c = (str2num(get(handles.cypher_text,'String')));
-one = (str2num(get(handles.output_check,'String')));
-two = (str2num(get(handles.output_check2,'String')));
-n = (one*two);
+c = (str2num(get(handles.c_txt,'String')));
+one = uint64(str2num(get(handles.output_check,'String')));
+two = uint64(str2num(get(handles.output_check2,'String')));
+n = uint64(one*two);
 m = 1;
 for e_prime = 1:in_prime
     m = mod((m*c),n);
 end
-disp(m)
-set(handles.num_decrypt,'String',m);
 
-i = 1;
-m1 = 0;
-while floor(m/27) > 0
-    m1(i) = mod(m,27)
-    m = floor(m/27);
-    i = i + 1;
-end
-for j = 1:length(m1)
-    if (m1(j) == 0)
-        m1(j) = m1(j)
-    else
-        m1(j) = m1(j)+96
-    end
-end
-
-mtxt = sprintf('%s',m1)
-set(handles.decryprt_text,'String',mtxt);
+set(handles.decryprt_text,'String',ptxt);
