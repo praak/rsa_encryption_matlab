@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 09-Nov-2015 13:06:44
+% Last Modified by GUIDE v2.5 11-Nov-2015 13:33:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,7 @@ guidata(hObject, handles);
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+rng('shuffle')
 set(handles.encrypt,'visible','off')
 
 % --- Outputs from this function are returned to the command line.
@@ -104,17 +105,22 @@ function check_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-number = str2double(get(handles.input_prime,'String'));
-for i1 = 2:(floor(sqrt(number)))
-    numb = mod(number,i1);
-        if (numb == 0)
-            result = 'Not a prime';
-            break;
-        else
-            result = 'Prime!';
-        end
+%number = str2double(get(handles.input_prime,'String'));
+number = randi([1e5 2^32],1);
+while (~(isprime(number)))
+    pause(0.01)
+   number = randi([1e5 2^32],1);
 end
-
+% for i1 = 2:(floor(sqrt(number)))
+%     numb = mod(number,i1);
+%         if (numb == 0)
+%             result = 'Not a prime';
+%             break;
+%         else
+%             result = 'Prime!';
+%         end
+% end
+result = sprintf('%i',number);
 set(handles.output_check,'String',result);
 
 
@@ -147,31 +153,20 @@ function check_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to check_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-number1 = str2double(get(handles.input_prime,'String'));
-number2 = str2double(get(handles.input_prime2,'String'));
-for i2 = 2:(floor(sqrt(number2)))
-    numb2 = mod(number2,i2);
-    if (numb2 == 0)
-        result2 = 'Not a prime';
-        primeout = result2;
-        break;
-    else
-        result2 = 'Prime!';
-        sigh = (number1-1)*(number2-1);
-        checker = get(handles.output_check,'String');
-        if (strcmp('Prime!',checker))
-            primeout = sprintf('The totient function gives us %d',sigh);
-            set(handles.output_primes,'String',primeout); 
-        else
-            primeout = 'Cant find result when prime1 is not prime!';
-            set(handles.output_primes,'String',primeout);
-        end
-    end
+number2 = randi([1e5 2^32],1);
+while (~(isprime(number2)))
+    pause(0.01)
+   number2 = randi([1e5 2^32],1);
 end
-
+result2 = sprintf('%i',number2);
 set(handles.output_check2,'String',result2);
-set(handles.output_primes,'String',primeout);
-
+number1 = str2num(get(handles.output_check2,'String'));
+n = uint32(number2 * number1);
+totient = (number1-1)*(number2-1);
+primeout = sprintf('n = %i, Totient = %i',n,totient);
+set(handles.output_primes,'String', primeout);
+totient_ot = sprintf('%i',totient);
+set(handles.totient_out,'String',totient_ot);
 
 
 function in_msg_Callback(hObject, eventdata, handles)
@@ -227,12 +222,18 @@ function test_gcd_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of test_gcd as text
 %        str2double(get(hObject,'String')) returns contents of test_gcd as a double
 
+number_in = str2num(get(handles.test_gcd,'String'));
+totient = str2num(get(handles.totient_out,'String'));
 
 % TODO : 
 %   Need to do the GCD CALL HERE. Need to pull the totient function
 %   Need to pull value from user. and check GCD = 1   
-
-
+if ((isprime(number_in))) && gcd(number_in,totient) == 1
+    set(handles.check_in,'String','We good');
+else
+    set(handles.test_gcd,'String','');
+    set(handles.check_in,'String','Not a prime');
+end
 
 % --- Executes during object creation, after setting all properties.
 function test_gcd_CreateFcn(hObject, eventdata, handles)
@@ -245,3 +246,38 @@ function test_gcd_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in find_d.
+function find_d_Callback(hObject, eventdata, handles)
+% hObject    handle to find_d (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a1 = str2num(get(handles.totient_out,'String'));
+a2 = a1;
+b1 = str2num(get(handles.test_gcd,'String'));
+b2 = 1;
+d = getd(a1,a2,b1,b2);
+
+
+function [d] = getd(a1,a2,b1,b2)
+    %doing extended gcd
+    tot = str2num(get(handles.totient_out,'String'));
+    c1 = a1 - b1*(floor(a1/b1));
+    c2 = a2 - b2*(floor(a2/b2));
+    a1 = b1;
+    a2 = b2;
+    b1 = c1;
+    b2 = c2;
+    if (b2<0)
+        b2 = mod(c2,tot)
+    end
+    if (b1 == 1)
+        d = b2;
+        return
+    else
+        d = getd(a1,a2,b1,b2)
+    end
+    
+
+
