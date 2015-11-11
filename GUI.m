@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 11-Nov-2015 13:33:14
+% Last Modified by GUIDE v2.5 11-Nov-2015 15:20:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,7 @@ guidata(hObject, handles);
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 rng('shuffle')
-set(handles.encrypt,'visible','off')
+% set(handles.encrypt,'visible','off')
 
 % --- Outputs from this function are returned to the command line.
 function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
@@ -106,10 +106,10 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %number = str2double(get(handles.input_prime,'String'));
-number = randi([1e5 2^32],1);
+number = randi([100 10000],1);
 while (~(isprime(number)))
     pause(0.01)
-   number = randi([1e5 2^32],1);
+   number = randi([100 10000],1);
 end
 % for i1 = 2:(floor(sqrt(number)))
 %     numb = mod(number,i1);
@@ -153,15 +153,15 @@ function check_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to check_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-number2 = randi([1e5 2^32],1);
+number2 = randi([100 10000],1);
 while (~(isprime(number2)))
     pause(0.01)
-   number2 = randi([1e5 2^32],1);
+   number2 = randi([100 10000],1);
 end
 result2 = sprintf('%i',number2);
 set(handles.output_check2,'String',result2);
 number1 = str2num(get(handles.output_check2,'String'));
-n = uint32(number2 * number1);
+n = uint64(number2 * number1);
 totient = (number1-1)*(number2-1);
 primeout = sprintf('n = %i, Totient = %i',n,totient);
 set(handles.output_primes,'String', primeout);
@@ -189,7 +189,7 @@ for p = 1:length(num_message)
    summed = summed + num_message(p)*(27^(maxx-1));
    maxx = maxx - 1;
 end
-out = sprintf('Output is : %i',summed);
+out = sprintf('%i',summed);
 set(handles.out_msg,'String',out);
 
 
@@ -211,7 +211,18 @@ function encrypt_Callback(hObject, eventdata, handles)
 % hObject    handle to encrypt (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+d = (str2num(get(handles.the_d,'String')));
+m = (str2num(get(handles.out_msg,'String')));
+one = uint64(str2num(get(handles.output_check,'String')));
+two = uint64(str2num(get(handles.output_check2,'String')));
+n = uint64(one*two);
+c = 1;
+for e_prime = 1:d
+    c = mod((c*m),n);
+end
+ptxt = get(handles.in_msg,'String');
+set(handles.plain_text,'String',ptxt);
+set(handles.cypher_text,'String',c);
 
 
 function test_gcd_Callback(hObject, eventdata, handles)
@@ -257,27 +268,54 @@ a1 = str2num(get(handles.totient_out,'String'));
 a2 = a1;
 b1 = str2num(get(handles.test_gcd,'String'));
 b2 = 1;
-d = getd(a1,a2,b1,b2);
+tot = uint32(str2num(get(handles.totient_out,'String')));
+d = getd(a1,a2,b1,b2,tot)
+results = sprintf('%i',d);
+set(handles.the_d,'String',results);
 
 
-function [d] = getd(a1,a2,b1,b2)
+function [d] = getd(a1,a2,b1,b2,tot)
     %doing extended gcd
-    tot = str2num(get(handles.totient_out,'String'));
     c1 = a1 - b1*(floor(a1/b1));
-    c2 = a2 - b2*(floor(a2/b2));
+    c2 = a2 - b2*(floor(a1/b1));
     a1 = b1;
     a2 = b2;
     b1 = c1;
     b2 = c2;
+    tot = tot;
     if (b2<0)
-        b2 = mod(c2,tot)
+        b2 = mod(c2,tot);
     end
     if (b1 == 1)
         d = b2;
-        return
+        return;
     else
-        d = getd(a1,a2,b1,b2)
+        d = getd(a1,a2,b1,b2,tot);
     end
     
 
 
+% --- Executes on button press in make_letters.
+function make_letters_Callback(hObject, eventdata, handles)
+% hObject    handle to make_letters (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+c = str2num(get(handles.cypher_text,'String'))
+i = 1;
+c1 = 0;
+while floor(c/27) > 0
+    c1(i) = mod(c,27)
+    c = floor(c/27);
+    i = i + 1;
+end
+for j = 1:length(c1)
+    if (c1(j) == 0)
+        c1(j) = c1(j)
+    else
+        c1(j) = c1(j)+96
+    end
+end
+
+ctxt = sprintf('%s',c1)
+set(handles.c_txt,'String',ctxt);
