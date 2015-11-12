@@ -55,12 +55,18 @@ function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for GUI
 handles.output = hObject;
 
+rng('shuffle')
+global max
+global min
+min = 2^32;
+max = 2^52;
+
 % Update handles structure
 guidata(hObject, handles);
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-rng('shuffle')
+
 % set(handles.encrypt,'visible','off')
 
 % --- Outputs from this function are returned to the command line.
@@ -104,12 +110,13 @@ function check_button_Callback(hObject, eventdata, handles)
 % hObject    handle to check_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+global min
+global max
 %number = str2double(get(handles.input_prime,'String'));
-number = randi([2^10 2^32],1);
+number = randi([min max],1);
 while (~(isprime(number)))
     pause(0.01)
-   number = randi([2^10 2^32],1);
+   number = randi([min max],1);
 end
 % for i1 = 2:(floor(sqrt(number)))
 %     numb = mod(number,i1);
@@ -153,10 +160,12 @@ function check_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to check_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-number2 = randi([2^10 2^32],1);
+global min
+global max
+number2 = randi([min max],1);
 while (~(isprime(number2)))
     pause(0.01)
-   number2 = randi([2^10 2^32],1);
+   number2 = randi([min max],1);
 end
 result2 = sprintf('%i',number2);
 set(handles.output_check2,'String',result2);
@@ -183,14 +192,16 @@ handles.in_msg = get(hObject,'String');
 
 message = get(hObject,'String');
 num_message = (double(message)-96);
+num_message = sym(num_message);
 %translating to decimal
-summed = 0;
+summed = sym(0);
 maxx = length(num_message);
 for p = 1:length(num_message)
-   summed = summed + num_message(p)*(27^(maxx-1));
+   summed = summed + num_message(maxx)*(27^(p-1));
    maxx = maxx - 1;
 end
-out = sprintf('%i',summed);
+summed = char(summed);
+out = sprintf('%s',summed);
 set(handles.out_msg,'String',out);
 
 
@@ -216,7 +227,7 @@ d = sym(get(handles.the_d,'String'));
 m = (sym(get(handles.out_msg,'String')));
 one = (sym(get(handles.output_check,'String')));
 two = (sym(get(handles.output_check2,'String')));
-n = (one*two);
+n = sym(one*two);
 % c = 1;
 z = modexp(m,d,n);
 
@@ -313,21 +324,28 @@ function make_letters_Callback(hObject, eventdata, handles)
 
 c = (sym(get(handles.cypher_num,'String')));
 i = 1;
-c1 = 0;
+c1 = sym(0);
+c2 = sym(0);
 while floor(c/27) > 0
-    c1(i) = mod(c,27)
+    c1(i) = mod(c,27);
     c = floor(c/27);
     i = i + 1;
 end
+c1(i) = c;
+
 for j = 1:length(c1)
     if (c1(j) == 0)
-        c1(j) = c1(j)
+        c1(j) = 32;
     else
-        c1(j) = c1(j)+96
+        c1(j) = c1(j)+96;
     end
 end
-c1 = char(c1);
-ctxt = sprintf('%s',c1)
+
+for k = 1: length(c1)
+    c2(length(c1)-k+1) = c1(k);
+end  
+c2 = double(c2);
+ctxt = sprintf('%s',c2)
 set(handles.c_txt,'String',ctxt);
 
 
@@ -341,16 +359,16 @@ in_prime = (sym(get(handles.test_gcd,'String')))
 c = (sym(get(handles.cypher_num,'String')))
 one = (sym(get(handles.output_check,'String')));
 two = (sym(get(handles.output_check2,'String')));
-n = (one*two);
-m = 1;
+n = sym(one*two);
+% m = 1;
 % for e_prime = 1:in_prime
 %     m = mod((m*c),n);
 % end
 z = modexp(c,in_prime,n);
+m=z
 z = char(z);
 set(handles.num_decrypt,'String',z);
-m=z;
-i = sym(1);
+i = 1;
 m1 = sym(0);
 m2 = sym(0);
 while floor(m/27) > 0
@@ -358,11 +376,12 @@ while floor(m/27) > 0
     m = floor(m/27);
     i = i + 1;
 end
-m1(i) = m;
+
+m1(i) = m
 
 for j = 1:length(m1)
     if (m1(j) == 0)
-        m1(j) = m1(j);
+        m1(j) = 32;
     else
         m1(j) = m1(j)+96;
     end
@@ -371,6 +390,7 @@ end
 for k = 1: length(m1)
     m2(length(m1)-k+1) = m1(k);
 end  
+m2 = double(m2);
 mtxt = sprintf('%s',m2)
 set(handles.decryprt_text,'String',mtxt);
 
