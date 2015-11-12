@@ -347,10 +347,10 @@ m = 1;
 %     m = mod((m*c),n);
 % end
 z = modexp(c,in_prime,n);
-m=z;
 z = char(z);
 set(handles.num_decrypt,'String',z);
-i = 1;
+m=z;
+i = sym(1);
 m1 = sym(0);
 m2 = sym(0);
 while floor(m/27) > 0
@@ -371,7 +371,6 @@ end
 for k = 1: length(m1)
     m2(length(m1)-k+1) = m1(k);
 end  
-m2 = double(m2);
 mtxt = sprintf('%s',m2)
 set(handles.decryprt_text,'String',mtxt);
 
