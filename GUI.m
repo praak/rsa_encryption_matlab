@@ -241,8 +241,13 @@ totient = str2num(get(handles.totient_out,'String'));
 % TODO : 
 %   Need to do the GCD CALL HERE. Need to pull the totient function
 %   Need to pull value from user. and check GCD = 1   
-if ((isprime(number_in))) && gcd(number_in,totient) == 1
-    set(handles.check_in,'String','We good');
+if ((isprime(number_in)))
+    if gcd(number_in,totient) == 1
+        set(handles.check_in,'String','We good');
+    else
+        set(handles.test_gcd,'String','');
+        set(handles.check_in,'String','Shares a common factor');
+    end
 else
     set(handles.test_gcd,'String','');
     set(handles.check_in,'String','Not a prime');
