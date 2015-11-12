@@ -161,7 +161,7 @@ end
 result2 = sprintf('%i',number2);
 set(handles.output_check2,'String',result2);
 number1 = str2num(get(handles.output_check2,'String'));
-n = uint64(number2 * number1);
+n = (number2 * number1);
 totient = (number1-1)*(number2-1);
 primeout = sprintf('n = %i, Totient = %i',n,totient);
 set(handles.output_primes,'String', primeout);
@@ -213,14 +213,14 @@ function encrypt_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 d = (str2num(get(handles.the_d,'String')));
 m = (str2num(get(handles.out_msg,'String')));
-one = uint64(str2num(get(handles.output_check,'String')));
-two = uint64(str2num(get(handles.output_check2,'String')));
-n = uint64(one*two);
+one = (str2num(get(handles.output_check,'String')));
+two = (str2num(get(handles.output_check2,'String')));
+n = (one*two);
 % c = 1;
 z = modexp(m,d,n);
 
 % for e_prime = 1:d
-%     c = uint64(mod((c*m),n));
+%     c = (mod((c*m),n));
 % end
 ptxt = get(handles.in_msg,'String');
 set(handles.plain_text,'String',ptxt);
@@ -266,11 +266,11 @@ function find_d_Callback(hObject, eventdata, handles)
 % hObject    handle to find_d (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a1 = uint64(str2num(get(handles.totient_out,'String')));
+a1 = (str2num(get(handles.totient_out,'String')));
 a2 = a1;
-b1 = uint64(str2num(get(handles.test_gcd,'String')));
+b1 = (str2num(get(handles.test_gcd,'String')));
 b2 = 1;
-tot = uint64(str2num(get(handles.totient_out,'String')));
+tot = (str2num(get(handles.totient_out,'String')));
 d = getd(a1,a2,b1,b2,tot)
 results = sprintf('%i',d);
 set(handles.the_d,'String',results);
@@ -303,7 +303,7 @@ function make_letters_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-c = uint64(str2num(get(handles.cypher_num,'String')));
+c = (str2num(get(handles.cypher_num,'String')));
 i = 1;
 c1 = 0;
 while floor(c/27) > 0
@@ -344,11 +344,14 @@ set(handles.num_decrypt,'String',z);
 m=z;
 i = 1;
 m1 = 0;
+m2 = 0;
 while floor(m/27) > 0
     m1(i) = mod(m,27);
     m = floor(m/27);
     i = i + 1;
 end
+m1(i) = m;
+
 for j = 1:length(m1)
     if (m1(j) == 0)
         m1(j) = m1(j);
@@ -357,7 +360,10 @@ for j = 1:length(m1)
     end
 end
 
-mtxt = sprintf('%s',m1)
+for k = 1: length(m1)
+    m2(length(m1)-k+1) = m1(k);
+end  
+mtxt = sprintf('%s',m2)
 set(handles.decryprt_text,'String',mtxt);
 
 
