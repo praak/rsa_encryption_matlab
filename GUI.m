@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 11-Nov-2015 16:17:56
+% Last Modified by GUIDE v2.5 11-Nov-2015 22:51:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -106,11 +106,15 @@ function check_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %number = str2double(get(handles.input_prime,'String'));
-number = randi([100 10000],1);
-while (~(isprime(number)))
-    pause(0.01)
-   number = randi([100 10000],1);
-end
+
+%  number = randi([70 1200],1);
+%  while (~(isprime(number)))
+%      pause(0.01)
+%     number = randi([70 1200],1);
+%  end
+
+number = 5;
+
 % for i1 = 2:(floor(sqrt(number)))
 %     numb = mod(number,i1);
 %         if (numb == 0)
@@ -153,15 +157,18 @@ function check_button2_Callback(hObject, eventdata, handles)
 % hObject    handle to check_button2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-number2 = randi([100 10000],1);
-while (~(isprime(number2)))
-    pause(0.01)
-   number2 = randi([100 10000],1);
-end
+
+%  number2 = randi([70 1200],1);
+%  while (~(isprime(number2)))
+%      pause(0.01)
+%     number2= randi([70 1200],1);
+%  end
+
+number2 = 11;
 result2 = sprintf('%i',number2);
 set(handles.output_check2,'String',result2);
-number1 = str2num(get(handles.output_check2,'String'));
-n = uint64(number2 * number1);
+number1 = str2num(get(handles.output_check,'String'));      %BUG: output_check2 changed to output_check
+n = (number2 * number1);
 totient = (number1-1)*(number2-1);
 primeout = sprintf('n = %i, Totient = %i',n,totient);
 set(handles.output_primes,'String', primeout);
@@ -213,12 +220,11 @@ function encrypt_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 d = (str2num(get(handles.the_d,'String')));
 m = (str2num(get(handles.out_msg,'String')));
-one = uint64(str2num(get(handles.output_check,'String')));
-two = uint64(str2num(get(handles.output_check2,'String')));
-n = uint64(one*two);
+one = (str2num(get(handles.output_check,'String')));
+two = (str2num(get(handles.output_check2,'String')));
+n = one*two;
 % c = 1;
 z = modexp(m,d,n);
-
 % for e_prime = 1:d
 %     c = uint64(mod((c*m),n));
 % end
@@ -266,11 +272,11 @@ function find_d_Callback(hObject, eventdata, handles)
 % hObject    handle to find_d (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a1 = uint64(str2num(get(handles.totient_out,'String')));
-a2 = a1;
-b1 = uint64(str2num(get(handles.test_gcd,'String')));
+a1 = str2num(get(handles.totient_out,'String'));
+a2 = str2num(get(handles.totient_out,'String'));
+b1 = str2num(get(handles.test_gcd,'String'));
 b2 = 1;
-tot = uint64(str2num(get(handles.totient_out,'String')));
+tot = str2num(get(handles.totient_out,'String'));
 d = getd(a1,a2,b1,b2,tot)
 results = sprintf('%i',d);
 set(handles.the_d,'String',results);
@@ -278,6 +284,7 @@ set(handles.the_d,'String',results);
 
 function [d] = getd(a1,a2,b1,b2,tot)
     %doing extended gcd
+    q = floor(a1/b1);
     c1 = a1 - b1*(floor(a1/b1));
     c2 = a2 - b2*(floor(a1/b1));
     a1 = b1;
@@ -303,7 +310,7 @@ function make_letters_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-c = uint64(str2num(get(handles.cypher_num,'String')));
+c = str2num(get(handles.cypher_num,'String'));
 i = 1;
 c1 = 0;
 while floor(c/27) > 0
@@ -339,16 +346,18 @@ m = 1;
 %     m = mod((m*c),n);
 % end
 z = modexp(c,in_prime,n);
-
 set(handles.num_decrypt,'String',z);
 m=z;
 i = 1;
 m1 = 0;
+m2 = 0;
 while floor(m/27) > 0
     m1(i) = mod(m,27);
     m = floor(m/27);
     i = i + 1;
 end
+m1(i) = m;
+
 for j = 1:length(m1)
     if (m1(j) == 0)
         m1(j) = m1(j);
@@ -357,7 +366,11 @@ for j = 1:length(m1)
     end
 end
 
-mtxt = sprintf('%s',m1)
+for k = 1:length(m1)
+    m2(length(m1)-k+1) = m1(k);
+end
+
+mtxt = sprintf('%s',m2)
 set(handles.decryprt_text,'String',mtxt);
 
 
@@ -377,3 +390,4 @@ function result = modexp(x,y,n)
         result = mod(x*z*z,n);
         return;
     end
+
